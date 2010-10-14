@@ -1,0 +1,769 @@
+"    $ svn update ~/.vim_runtime
+" 
+" Sections:
+"    -> General
+"    -> VIM user interface
+"    -> Colors and Fonts
+"    -> Files and backups
+"    -> Text, tab and indent related
+"    -> Visual mode related
+"    -> Command mode related
+"    -> Moving around, tabs and buffers
+"    -> Statusline
+"    -> Parenthesis/bracket expanding
+"    -> General Abbrevs
+"    -> Editing mappings
+"
+"    -> Cope
+"    -> Omni complete functions
+"    -> Python section
+"    -> JavaScript section
+"
+" Plugins_Included:
+"     > minibufexpl.vim - http://www.vim.org/scripts/script.php?script_id=159
+"       Makes it easy to get an overview of buffers:
+"
+"
+"           info -> :e ~/.vim_runtime/plugin/minibufexpl.vim
+"
+"     > bufexplorer - http://www.vim.org/scripts/script.php?script_id=42
+"       Makes it easy to switch between buffers:
+"          info -> :help bufExplorer
+"
+"     > yankring.vim - http://www.vim.org/scripts/script.php?script_id=1234
+"       Emacs's killring, useful when using the clipboard:
+"           info -> :help yankring
+"
+"     > surround.vim - http://www.vim.org/scripts/script.php?script_id=1697
+"       Makes it easy to work with surrounding text:
+"           info -> :help surround
+"
+"     > snipMate.vim - http://www.vim.org/scripts/script.php?script_id=2540
+"       Snippets for many languages (similar to TextMate's):
+"           info -> :help snipMate
+"
+"     > fuzzyfinder - http://www.vim.org/scripts/script.php?script_id=1984
+"       Find files fast (similar to TextMate's feature):
+"           info -> :help fuzzyfinder@en
+"
+"  Revisions:
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible
+
+" Sets how many lines of history VIM has to remember
+set history=300
+
+" Enable filetype plugin
+filetype plugin on
+filetype indent on
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
+
+" Fast saving
+nmap <leader>w :w!<cr>
+
+
+" When vimrc is edited, reload it
+autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
+nnoremap <leader>ev <C-w><C-v><C-l>:e ~/.vim_runtime/vimrc<cr>
+
+
+set shm=atI " Disable intro screen
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM user interface
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the curors - when moving vertical..
+set so=7
+
+set wildmenu "Turn on WiLd menu
+
+set ruler "Always show current position
+
+set cmdheight=2 "The commandbar height
+
+set hid "Change buffer - without saving
+
+" Set backspace config
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+set ignorecase "Ignore case when searching
+
+set hlsearch "Highlight search things
+
+set incsearch "Make search act like search in modern browsers
+
+set magic "Set magic on, for regular expressions
+
+set showmatch "Show matching bracets when text indicator is over them
+set mat=2 "How many tenths of a second to blink
+
+" No sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+syntax enable "Enable syntax hl
+
+" Set font according to system
+if MySys() == "mac"
+  set gfn=Bitstream\ Vera\ Sans\ Mono:h13
+  set shell=/bin/bash
+elseif MySys() == "windows"
+  set gfn=Bitstream\ Vera\ Sans\ Mono:h10
+elseif MySys() == "linux"
+  set gfn=Inconsolata\ Medium\ 11
+  "set gfn=Monaco\ Medium\ 9
+  "set gfn=Droid\ Sans\ Mono\ 9
+  set shell=/bin/bash
+endif
+
+if has("gui_running")
+  set guioptions-=T
+  set guioptions-=m
+  set guioptions-=r
+  "set guioptions=ac
+  "set t_Co=256
+  "set background=dark
+  colorscheme molokai
+  "colorscheme ir_black
+
+  "set lines=999 columns=999
+  set lines=40 columns=120
+  "set relativenumber
+  set nu
+else
+  set t_Co=256
+  "set background=dark
+  "colorscheme ir_black
+  "colorscheme peaksea
+  
+  colorscheme molokai
+  set nu
+  "set relativenumber
+endif
+
+set encoding=utf8
+try
+    lang en_US
+catch
+endtry
+
+set ffs=unix,dos,mac "Default file types
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files and backups
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git anyway...
+set nobackup
+set nowb
+set noswapfile
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
+
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indet
+set wrap "Wrap lines
+
+map <leader>t2 :setlocal shiftwidth=2<cr>
+map <leader>t4 :setlocal shiftwidth=4<cr>
+map <leader>t8 :setlocal shiftwidth=8<cr>
+
+
+""""""""""""""""""""""""""""""
+" => Visual mode related
+""""""""""""""""""""""""""""""
+" Really useful!
+"  In visual mode when you press * or # to search for the current selection
+vnoremap <silent> * :call VisualSearch('f')<CR>
+vnoremap <silent> # :call VisualSearch('b')<CR>
+
+" When you press gv you vimgrep after the selected text
+vnoremap <silent> gv :call VisualSearch('gv')<CR>
+map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+
+
+function! CmdLine(str)
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
+endfunction 
+
+" From an idea by Michael Naumann
+function! VisualSearch(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Command mode related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Smart mappings on the command line
+cno $h e ~/
+cno $d e ~/Desktop/
+cno $j e ./
+cno $c e <C-\>eCurrentFileDir("e")<cr>
+
+" $q is super useful when browsing on the command line
+cno $q <C-\>eDeleteTillSlash()<cr>
+
+" Bash like keys for the command line
+cnoremap <C-A>		<Home>
+cnoremap <C-E>		<End>
+cnoremap <C-K>		<C-U>
+
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
+
+func! Cwd()
+  let cwd = getcwd()
+  return "e " . cwd 
+endfunc
+
+func! DeleteTillSlash()
+  let g:cmd = getcmdline()
+  if MySys() == "linux" || MySys() == "mac"
+    let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
+  else
+    let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
+  endif
+  if g:cmd == g:cmd_edited
+    if MySys() == "linux" || MySys() == "mac"
+      let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
+    else
+      let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
+    endif
+  endif   
+  return g:cmd_edited
+endfunc
+
+func! CurrentFileDir(cmd)
+  return a:cmd . " " . expand("%:p:h") . "/"
+endfunc
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around, tabs and buffers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map space to / (search) and c-space to ? (backgwards search)
+map <space> /
+map <c-space> ?
+map <silent> <leader><cr> :noh<cr>
+
+" Smart way to move btw. windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+nnoremap <leader>w <C-w>v<C-w>l
+
+
+" Close the current buffer
+map <leader>bd :Bclose<cr>
+
+" Close all the buffers
+map <leader>ba :1,300 bd!<cr>
+
+" Use the arrows to something usefull
+"map <right> :bn<cr>
+"map <up> :bn<cr>
+"map <left> :bp<cr>
+"map <down> :bp<cr>
+
+" Don't use the arrow keys for something useful
+inoremap  <Up>     <NOP>
+inoremap  <Down>   <NOP>
+inoremap  <Left>   <NOP>
+inoremap  <Right>  <NOP>
+noremap   <Up>     <NOP>
+noremap   <Down>   <NOP>
+noremap   <Left>   <NOP>
+noremap   <Right>  <NOP>
+nnoremap j gj
+nnoremap k gk
+
+
+" Tab configuration
+map <leader>tn :tabnew %<cr>
+map <leader>te :tabedit 
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove 
+
+" When pressing <leader>cd switch to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>
+
+
+command! Bclose call <SID>BufcloseCloseIt()
+function! <SID>BufcloseCloseIt()
+   let l:currentBufNum = bufnr("%")
+   let l:alternateBufNum = bufnr("#")
+
+   if buflisted(l:alternateBufNum)
+     buffer #
+   else
+     bnext
+   endif
+
+   if bufnr("%") == l:currentBufNum
+     new
+   endif
+
+   if buflisted(l:currentBufNum)
+     execute("bdelete! ".l:currentBufNum)
+   endif
+endfunction
+
+" Specify the behavior when switching between buffers 
+"try
+"  set switchbuf=usetab
+"  set stal=2
+"catch
+"endtry
+
+
+""""""""""""""""""""""""""""""
+" => Statusline
+""""""""""""""""""""""""""""""
+" Always hide the statusline
+set laststatus=2
+
+function! CurDir()
+   let curdir = substitute(getcwd(), '/home/avanherk/', "~/", "g")
+   return curdir
+endfunction
+
+"Format the statusline
+"set statusline=%F%m%r%h%w\ CWD:\ %r%{CurDir()}%h\ \ FORMAT:%{&ff}\ TYPE:%Y\ ASCII:\%03.3b\ HEX:\%02.2B\ POS:%04l,%04v\ %p%%\ LEN:%L\ %{fugitive#statusline()}
+
+"let &statusline="%F%m%r%h%w\ CWD:\ %r%{CurDir()}%h\ \ FORMAT:%{&ff}\ TYPE:%Y\ ASCII:\%03.3b\ HEX:\%02.2B\ POS:%04l,%04v\ %p%%\ LEN:%L\ %{fugitive#statusline()}" 
+"let  g:Active_statusline=&g:statusline 
+"let g:NCstatusline = "%<%F"    " non-current statusline 
+"au WinEnter * let &l:statusline = g:Active_statusline 
+"au WinLeave * let &l:statusline = g:NCstatusline 
+
+
+" Colors of active statusline 
+"hi User1  guifg=#66ff66 guibg=#008000 gui=bold term=standout cterm=bold ctermfg=lightgreen ctermbg=lightgreen 
+"hi User2  guifg=#ffff60 guibg=#008000 gui=bold term=none cterm=bold ctermfg=yellow ctermbg=lightgreen 
+
+" Colors or inactive statusline 
+"hi User3  guifg=#66ff66 guibg=#008000 gui=bold term=standout cterm=bold ctermfg=lightgreen ctermbg=lightgreen 
+"hi User4  guifg=#66ff66 guibg=#008000 gui=bold term=none cterm=bold ctermfg=lightgreen ctermbg=lightgreen 
+
+" Function used to display syntax group. 
+function! SyntaxItem() 
+  return synIDattr(synID(line("."),col("."),1),"name") 
+endfunction 
+
+" Function used to display utf-8 sequence. 
+function! ShowUtf8Sequence() 
+  let p = getpos('.') 
+  redir => utfseq 
+  sil normal! g8 
+  redir End 
+  call setpos('.', p) 
+  return substitute(matchstr(utfseq, '\x\+ .*\x'), '\<\x', '0x&', 'g') 
+endfunction 
+
+if has('statusline') 
+  if version >= 700 
+    " Fancy status line. 
+    set statusline = 
+    "set statusline+=%#User1#                       " highlighting 
+    set statusline+=%-2.2n\                        " buffer number 
+    "set statusline+=%#User2#                       " highlighting 
+    set statusline+=%f\                            " file name 
+    "set statusline+=%#User1#                       " highlighting 
+    set statusline+=%h%m%r%w\                      " flags 
+    set statusline+=CWD:\%r%{CurDir()}%h,
+    set statusline+=%{(&key==\"\"?\"\":\"encr,\")} " encrypted? 
+    set statusline+=%{strlen(&ft)?&ft:'none'},     " file type 
+    set statusline+=%{(&fenc==\"\"?&enc:&fenc)},   " encoding 
+    set statusline+=%{((exists(\"+bomb\")\ &&\ &bomb)?\"B,\":\"\")} " BOM 
+    set statusline+=%{&fileformat},                " file format 
+    set statusline+=%{&spelllang},                 " spell language 
+    set statusline+=%{SyntaxItem()}                " syntax group under cursor 
+    set statusline+=%=                             " indent right 
+    "set statusline+=%#User2#                       " highlighting 
+    set statusline+=%{ShowUtf8Sequence()}\         " utf-8 sequence 
+    "set statusline+=%#User1#                       " highlighting 
+    set statusline+=0x%B\                          " char under cursor 
+    set statusline+=%-6.(%l,%c%V%)\ %<%P           " position 
+
+    " Use different colors for statusline in current and non-current window. 
+    let g:Active_statusline=&g:statusline 
+    let g:NCstatusline=substitute( 
+      \                substitute(g:Active_statusline, 
+      \                'User1', 'User3', 'g'), 
+      \                'User2', 'User4', 'g') 
+    au WinEnter * let&l:statusline = g:Active_statusline 
+    au WinLeave * let&l:statusline = g:NCstatusline 
+  endif 
+endif 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Parenthesis/bracket expanding
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+vnoremap $1 <esc>`>a)<esc>`<i(<esc>
+vnoremap $2 <esc>`>a]<esc>`<i[<esc>
+vnoremap $3 <esc>`>a}<esc>`<i{<esc>
+vnoremap $$ <esc>`>a"<esc>`<i"<esc>
+vnoremap $q <esc>`>a'<esc>`<i'<esc>
+vnoremap $e <esc>`>a"<esc>`<i"<esc>
+
+" Map auto complete of (, ", ', [
+inoremap $1 ()<esc>i
+inoremap $2 []<esc>i
+inoremap $3 {}<esc>i
+inoremap $4 {<esc>o}<esc>O
+inoremap $q ''<esc>i
+inoremap $e ""<esc>i
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General Abbrevs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+iab teh the
+iab htis this
+iab tihs this
+iab eariler earlier
+iab funciton function
+iab funtion function
+iab fucntion function
+iab retunr return
+iab reutrn return
+iab foreahc foreach
+iab !+ !=
+iab eariler earlier
+iab !+ !=
+iab ~? ~/
+
+iab todo: TODO:
+iab done: DONE:
+iab fixme: FIXME:
+iab fixed: FIXED:
+
+iab avh Aaron van Herk <aaron.vanherk@gmail.com>
+
+
+" lorem ipsum
+inoreabbrev dolorem Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+inoreabbrev mdash &nbsp;&mdash;
+inoreabbrev nbsp &nbsp;
+inoreabbrev <<< &lt;
+inoreabbrev >>> &gt
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Remap VIM 0
+map 0 ^
+
+"Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
+nmap <M-j> mz:m+<cr>`z
+nmap <M-k> mz:m-2<cr>`z
+vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+if MySys() == "mac"
+  nmap <D-j> <M-j>
+  nmap <D-k> <M-k>
+  vmap <D-j> <M-j>
+  vmap <D-k> <M-k>
+endif
+
+"Delete trailing white space, useful for Python ;)
+func! DeleteTrailingWS()
+  exe "normal mz"
+  %s/\s\+$//ge
+  exe "normal `z"
+endfunc
+autocmd BufWrite *.py :call DeleteTrailingWS()
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Cope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Do :help cope if you are unsure what cope is. It's super useful!
+map <leader>cc :botright cope<cr>
+map <leader>n :cn<cr>
+map <leader>p :cp<cr>
+
+
+""""""""""""""""""""""""""""""
+" => bufExplorer plugin
+""""""""""""""""""""""""""""""
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerShowRelativePath=1
+
+
+""""""""""""""""""""""""""""""
+" => Minibuffer plugin
+""""""""""""""""""""""""""""""
+let g:miniBufExplModSelTarget = 1
+let g:miniBufExplorerMoreThanOne = -1
+let g:miniBufExplModSelTarget = 0
+let g:miniBufExplUseSingleClick = 1
+let g:miniBufExplMapWindowNavVim = 1
+"let g:miniBufExplVSplit = 25
+"let g:miniBufExplSplitBelow=1
+
+let g:bufExplorerSortBy = "name"
+
+"autocmd BufRead,BufNew :call UMiniBufExplorer
+
+map <leader>u :TMiniBufExplorer<cr>:TMiniBufExplorer<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Omni complete functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Git settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Spell checking
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Pressing ,s will toggle and untoggle spell checking
+map <leader>s :setlocal spell!<cr>
+
+"spell language
+set spelllang=en_au
+set spellsuggest=5
+
+"Shortcuts using <leader>
+map <leader>sn ]s
+map <leader>sp [s
+map <leader>sa zg
+map <leader>s? z=
+
+
+""""""""""""""""""""""""""""""
+" => Python section
+""""""""""""""""""""""""""""""
+au FileType python set nocindent
+let python_highlight_all = 1
+au FileType python syn keyword pythonDecorator True None False self
+
+au BufNewFile,BufRead *.jinja set syntax=htmljinja
+au BufNewFile,BufRead *.mako set ft=mako
+
+au FileType python inoremap <buffer> $r return 
+au FileType python inoremap <buffer> $i import 
+au FileType python inoremap <buffer> $p print 
+au FileType python inoremap <buffer> $f #--- PH ----------------------------------------------<esc>FP2xi
+au FileType python map <buffer> <leader>1 /class 
+au FileType python map <buffer> <leader>2 /def 
+au FileType python map <buffer> <leader>C ?class 
+au FileType python map <buffer> <leader>D ?def 
+
+
+""""""""""""""""""""""""""""""
+" => JavaScript section
+"""""""""""""""""""""""""""""""
+"au FileType javascript call JavaScriptFold()
+au FileType javascript setl fen
+au FileType javascript setl nocindent
+
+"au FileType javascript imap <c-t> AJS.log();<esc>hi
+"au FileType javascript imap <c-a> alert();<esc>hi
+
+au FileType javascript inoremap <buffer> $r return 
+au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
+
+function! JavaScriptFold() 
+    setl foldmethod=syntax
+    setl foldlevelstart=1
+    syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
+
+    "function! FoldText()
+    "return substitute(getline(v:foldstart), '{.*', '{...}', '')
+    "endfunction
+    "setl foldtext=FoldText()
+endfunction
+
+
+""""""""""""""""""""""""""""""
+" => Fuzzy finder
+""""""""""""""""""""""""""""""
+try
+    call fuf#defineLaunchCommand('FufCWD', 'file', 'fnamemodify(getcwd(), ''%:p:h'')')
+    map <leader>t :FufCWD **/<CR>
+catch
+endtry
+
+""""""""""""""""""""""""""""""
+" => ConqueTerm
+""""""""""""""""""""""""""""""
+map <leader>cz :ConqueTerm bash<CR>
+
+
+
+""""""""""""""""""""""""""""""
+" => Vim grep
+""""""""""""""""""""""""""""""
+let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated .git'
+set grepprg=/bin/grep\ -nH
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => MISC
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+"Quickly open a buffer for scripbble
+map <leader>q :e ~/buffer<cr>
+
+
+""""""""""""""""""""""""""""""""""""""
+" => Fast opening of files
+""""""""""""""""""""""""""""""""""""""
+"Open the .vimrc
+map <leader>e :e! ~/.vim_runtime/vimrc<cr>
+
+"Open hosts file"
+map <leader>h :e! /etc/hosts<cr>
+
+"Open zshrc"
+map <leader>z :e! ~/.zshrc<cr>
+
+"Open local zshrc"
+map <leader>zl :e! ~/.zshrc.local<cr>
+
+"Open env zsh
+map <leader>ze :e! ~/.zshenv<cr>
+
+
+"Open bashrc"
+map <leader>b :e! ~/.bashrc<cr>
+
+"Open local bashrc"
+map <leader>bl :e! ~/.bashrc.local<cr>
+
+"Open env bashrc
+map <leader>be :e! ~/.bashrc.env<cr>
+
+"Open env bashrc
+map <leader>ba :e! ~/.bashrc.aliases<cr>
+
+""""""""""""""""""""""""""""""""""""""
+" => NERDTREE Helpers
+""""""""""""""""""""""""""""""""""""""
+nmap <F12> :NERDTreeToggle<cr>
+nmap <leader>ob :OpenBookmark
+
+""""""""""""""""""""""""""""""""""""""
+" =>   Show hidden Chars
+""""""""""""""""""""""""""""""""""""'"
+nmap <leader>l :set list!<CR>
+
+"change the tab and end of line chars
+set listchars=tab:▸\ ,eol:¬
+
+
+"""""""""""""""""""""""""""""""""""""
+" => GIT
+"""""""""""""""""""""""""""""""""""""
+"Set the default width of a commit message to 72 chars
+autocmd FileType gitcommit set tw=72
+
+
+"""""""""""""""""""""""""""""""""""""
+" => ASCIIDOC
+"""""""""""""""""""""""""""""""""""""
+"Set the default width to 72 chars
+"autocmd FileType asciidoc set tw=72
+
+""""""""""""""""""""""""""""""""""""
+" => Quiting and Saving
+""""""""""""""""""""""""""""""""""""
+"have a nice confirm message if buffer is dirty
+map :q :confirm q
+"don't update time stamp if file has not been modified
+map :w :up
+"When the Vim window has lost focus save all the buffers
+au FocusLost * :wa
+
+
+""""""""""""""""""""""""""""""""""""
+" => Vimwiki
+""""""""""""""""""""""""""""""""""""
+let wiki = {}
+let wiki.path = '~/vimwiki/'
+let wiki.css_name = 'css/styles.css'
+let wiki.nested_syntaxes = {
+      \ 'python': 'python',
+      \ 'vim': 'vim',
+      \ 'vb': 'vb',
+      \ }
+let g:vimwiki_list =
+      \ [wiki,
+      \  {'path': '~/work/vimwiki_wiki/'},
+      \  {'path': '~/testwiki/', 'syntax': 'media'}]
+
+"let g:vimwiki_menu = 'Plugin.Vimwiki'
+"let g:vimwiki_w32_dir_enc = 'cp1251'
+
+
+
+
+" In insert mode use jj to get to normal mode
+inoremap jj <ESC>
+
+"Ack
+nnoremap <leader>a :Ack
+
+autocmd BufEnter *.txt set guifont=Monaco\ Medium\ 9
