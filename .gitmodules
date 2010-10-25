@@ -10,3 +10,6 @@
 [submodule "bundle/xmledit"]
 	path = bundle/xmledit
 	url = http://github.com/sukima/xmledit.git
+[submodule "bundle/surround"]
+	path = bundle/surround
+	url = http://github.com/tpope/vim-surround.git
