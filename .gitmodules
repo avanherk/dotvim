@@ -7,3 +7,6 @@
 [submodule "bundles/nerdtree"]
 	path = bundles/nerdtree
 	url = http://github.com/scrooloose/nerdtree.git
+[submodule "bundle/xmledit"]
+	path = bundle/xmledit
+	url = http://github.com/sukima/xmledit.git
