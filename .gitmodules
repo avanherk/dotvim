@@ -1,11 +1,11 @@
 [submodule "bundles/fugitive"]
-	path = bundles/fugitive
+	path = bundle/fugitive
 	url = http://github.com/tpope/vim-fugitive.git
 [submodule "bundles/surround"]
-	path = bundles/surround
+	path = bundle/surround
 	url = http://github.com/tpope/vim-surround.git
 [submodule "bundles/nerdtree"]
-	path = bundles/nerdtree
+	path = bundle/nerdtree
 	url = http://github.com/scrooloose/nerdtree.git
 [submodule "bundle/xmledit"]
 	path = bundle/xmledit
