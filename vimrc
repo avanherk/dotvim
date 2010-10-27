@@ -22,7 +22,7 @@ set wildmenu "Turn on WiLd menu
 
 set ruler "Always show current position
 
-set cmdheight=2 "The commandbar height
+set cmdheight=1 "The commandbar height
 
 set hid "Change buffer - without saving
 
@@ -51,6 +51,9 @@ set number
 set vb t_vb=
 set ts=2 sts=2 sw=2 expandtab
 syntax on
+
+
+set tf " Improves redrawing for newer computers
 
 if has("autocmd")
 	filetype plugin indent on
