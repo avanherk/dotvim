@@ -44,11 +44,9 @@ set mat=2 "How many tenths of a second to blink
 " No sound on errors
 set noerrorbells
 set novisualbell
-set t_vb=
 
 set hidden
 set number
-set vb t_vb=
 set ts=2 sts=2 sw=2 expandtab
 syntax on
 
@@ -413,3 +411,5 @@ inoremap jj <ESC>
 "Ack
 nnoremap <leader>a :Ack
 
+set vb t_vb=
+set t_vb=
