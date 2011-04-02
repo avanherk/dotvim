@@ -4,7 +4,8 @@ set guioptions-=m
 set guioptions-=r
 "colorscheme molokai
 "colorscheme ir_black
-colorscheme liquidcarbon
+colorscheme jellybeans
+"colorscheme liquidcarbon
 
 "set lines=999 columns=999
 set lines=40 columns=120
