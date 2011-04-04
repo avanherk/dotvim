@@ -22,7 +22,7 @@ set wildmenu "Turn on WiLd menu
 
 set ruler "Always show current position
 
-set cmdheight=1 "The commandbar height
+set cmdheight=2 "The commandbar height
 
 set hid "Change buffer - without saving
 
@@ -411,5 +411,11 @@ inoremap jj <ESC>
 "Ack
 nnoremap <leader>a :Ack
 
+"This hopefully stop screen flickering
 set vb t_vb=
 set t_vb=
+if has("autocmd") && has("gui") 
+  au GUIEnter * set t_vb= 
+endif
+
+"autocmd BufEnter * if &filetype != 'help' | silent! cd %:p:h | endif
